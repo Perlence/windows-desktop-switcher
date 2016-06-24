@@ -55,19 +55,19 @@ switchDesktopByNumber(targetDesktop)
         return
     }
 
-    ; Go right until we reach the desktop we want
-    while(CurrentDesktop < targetDesktop) {
-        Send ^#{Right}
-        CurrentDesktop++
-        OutputDebug, [right] target: %targetDesktop% current: %CurrentDesktop%
+    targetDesktop--
+    Send, #{Tab}
+    WinWaitActive, ahk_class MultitaskingViewFrame
+    if ErrorLevel
+    {
+        return
     }
-
-    ; Go left until we reach the desktop we want
-    while(CurrentDesktop > targetDesktop) {
-        Send ^#{Left}
-        CurrentDesktop--
-        OutputDebug, [left] target: %targetDesktop% current: %CurrentDesktop%
+    Send, {Tab}
+    if (targetDesktop > 0) {
+        Send, {Right %targetDesktop%}
     }
+    Send, {Enter}
+    CurrentDesktop := targetDesktop + 1
 }
 
 ;

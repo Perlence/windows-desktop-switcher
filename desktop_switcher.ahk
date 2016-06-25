@@ -10,8 +10,14 @@ global PreviousDesktop := 1
 ;
 mapDesktopsFromRegistry() {
     ; Get the current desktop UUID. Length should be 32 always, but there's no guarantee this couldn't change in a later Windows release so we check.
-    RegRead, CurrentDesktopId, HKEY_CURRENT_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\SessionInfo\1\VirtualDesktops, CurrentVirtualDesktop
-    IdLength := StrLen(CurrentDesktopId)
+    Loop, 65536 {
+        RegRead, CurrentDesktopId, HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\SessionInfo\%a_index%\VirtualDesktops, CurrentVirtualDesktop
+        if (!CurrentDesktopId) {
+            continue
+        }
+        IdLength := StrLen(CurrentDesktopId)
+        break
+    }
 
     ; Get a list of the UUIDs for all virtual desktops on the system
     RegRead, DesktopList, HKEY_CURRENT_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops, VirtualDesktopIDs

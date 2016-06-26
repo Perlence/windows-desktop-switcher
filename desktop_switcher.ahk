@@ -48,8 +48,7 @@ mapDesktopsFromRegistry() {
 getSessionId()
 {
     ProcessId := DllCall("GetCurrentProcessId", "UInt")
-    if ErrorLevel
-    {
+    if ErrorLevel {
         OutputDebug, Error getting current process id: %ErrorLevel%
         return
     }
@@ -80,8 +79,9 @@ switchDesktopByNumber(targetDesktop)
 
     Send, #{Tab}
     WinWaitActive, ahk_class MultitaskingViewFrame
-    if ErrorLevel
+    if ErrorLevel {
         return
+    }
 
     Send, {Tab}
     if (targetDesktop > 1) {

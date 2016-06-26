@@ -75,7 +75,8 @@ switchDesktopByNumber(targetDesktop, map := true)
     }
 
     ; Don't attempt to switch to an invalid desktop
-    if (targetDesktop > DesktopCount || targetDesktop < 0) {
+    if (targetDesktop > DesktopCount || targetDesktop < 1) {
+        OutputDebug, [invalid] target: %targetDesktop% current: %CurrentDesktop%
         return
     }
 

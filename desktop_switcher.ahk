@@ -10,14 +10,12 @@ global PreviousDesktop := 1
 ;
 mapDesktopsFromRegistry() {
     ; Get the current desktop UUID. Length should be 32 always, but there's no guarantee this couldn't change in a later Windows release so we check.
-    Loop, 65536 {
-        RegRead, CurrentDesktopId, HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\SessionInfo\%a_index%\VirtualDesktops, CurrentVirtualDesktop
-        if (!CurrentDesktopId) {
-            continue
-        }
-        IdLength := StrLen(CurrentDesktopId)
-        break
+    SessionId := getSessionId()
+    if (!SessionId) {
+        return
     }
+    RegRead, CurrentDesktopId, HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\SessionInfo\%SessionId%\VirtualDesktops, CurrentVirtualDesktop
+    IdLength := StrLen(CurrentDesktopId)
 
     ; Get a list of the UUIDs for all virtual desktops on the system
     RegRead, DesktopList, HKEY_CURRENT_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops, VirtualDesktopIDs
@@ -45,6 +43,25 @@ mapDesktopsFromRegistry() {
         }
         i++
     }
+}
+
+getSessionId()
+{
+    ProcessId := DllCall("GetCurrentProcessId", "UInt")
+    if ErrorLevel
+    {
+        OutputDebug, Error getting current process id: %ErrorLevel%
+        return
+    }
+    OutputDebug, Current Process Id: %ProcessId%
+
+    DllCall("ProcessIdToSessionId", "UInt", ProcessId, "UInt*", SessionId)
+    if ErrorLevel {
+        OutputDebug, Error getting session id: %ErrorLevel%
+        return
+    }
+    OutputDebug, Current Session Id: %SessionId%
+    return SessionId
 }
 
 ;

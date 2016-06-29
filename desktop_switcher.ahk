@@ -1,7 +1,7 @@
 ; Globals
-global DesktopCount := 4        ; Windows starts with 2 desktops at boot
-global CurrentDesktop := 1      ; Desktop count is 1-indexed (Microsoft numbers them this way)
-global PreviousDesktop := 1     ; Number of previous desktop
+DesktopCount := 4        ; Windows starts with 2 desktops at boot
+CurrentDesktop := 1      ; Desktop count is 1-indexed (Microsoft numbers them this way)
+PreviousDesktop := 1     ; Number of previous desktop
 
 ;
 ; This function examines the registry to build an accurate list of the current virtual desktops and which one we're currently on.
@@ -9,6 +9,8 @@ global PreviousDesktop := 1     ; Number of previous desktop
 ; List of desktops appears to be in HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops
 ;
 mapDesktopsFromRegistry() {
+    global DesktopCount, CurrentDesktop, PreviousDesktop
+
     ; Get the current desktop UUID. Length should be 32 always, but there's no guarantee this couldn't change in a later Windows release so we check.
     IdLength := 32
     SessionId := getSessionId()
@@ -77,6 +79,8 @@ getSessionId()
 ;
 switchDesktopByNumber(targetDesktop, map := true)
 {
+    global DesktopCount, CurrentDesktop, PreviousDesktop
+
     ; Re-generate the list of desktops and where we fit in that. We do this because
     ; the user may have switched desktops via some other means than the script.
     if (map) {
@@ -111,6 +115,7 @@ switchDesktopByNumber(targetDesktop, map := true)
 ;
 switchToPreviousDesktop()
 {
+    global PreviousDesktop
     mapDesktopsFromRegistry()
     switchDesktopByNumber(PreviousDesktop, false)
 }
@@ -120,6 +125,7 @@ switchToPreviousDesktop()
 ;
 createVirtualDesktop()
 {
+    global DesktopCount, CurrentDesktop, PreviousDesktop
     Send, #^d
     DesktopCount++
     PreviousDesktop := CurrentDesktop
@@ -132,6 +138,7 @@ createVirtualDesktop()
 ;
 deleteVirtualDesktop()
 {
+    global DesktopCount, CurrentDesktop, PreviousDesktop
     Send, #^{F4}
     DesktopCount--
     CurrentDesktop--

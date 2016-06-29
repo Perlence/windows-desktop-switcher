@@ -139,6 +139,14 @@ deleteVirtualDesktop()
     OutputDebug, [delete] desktops: %DesktopCount% current: %CurrentDesktop%
 }
 
+;
+; This function toggles layer setting of current window
+;
+toggleAlwaysOnTop() {
+    hwnd := WinExist("A")
+    WinSet, AlwaysOnTop, Toggle, ahk_id %hwnd%
+}
+
 ; Main
 SetKeyDelay, 75
 mapDesktopsFromRegistry()
@@ -180,3 +188,4 @@ CapsLock & `::switchToPreviousDesktop()
 ^!a::switchDesktopByNumber(CurrentDesktop - 1)
 ^!c::createVirtualDesktop()
 ^!d::deleteVirtualDesktop()
+^#a::toggleAlwaysOnTop()

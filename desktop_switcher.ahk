@@ -60,14 +60,14 @@ getSessionId()
 {
     ProcessId := DllCall("GetCurrentProcessId", "UInt")
     if ErrorLevel {
-        OutputDebug, Error getting current process id: %ErrorLevel%
+        OutputDebug, Error getting current Process Id: %ErrorLevel%
         return
     }
     OutputDebug, Current Process Id: %ProcessId%
 
     DllCall("ProcessIdToSessionId", "UInt", ProcessId, "UInt*", SessionId)
     if ErrorLevel {
-        OutputDebug, Error getting session id: %ErrorLevel%
+        OutputDebug, Error getting Session Id: %ErrorLevel%
         return
     }
     OutputDebug, Current Session Id: %SessionId%
@@ -93,18 +93,25 @@ switchDesktopByNumber(targetDesktop, map := true)
         return
     }
 
+    ; Open task view and wait for it to become active
     Send, #{Tab}
     WinWaitActive, ahk_class MultitaskingViewFrame
     if ErrorLevel {
+        OutputDebug, Timed out waiting for task view
         return
     }
 
+    ; Focus on desktops
     Send, {Tab}
+
+    ; Page through desktops without opening any
     if (targetDesktop > 1) {
         targetDesktop--
         Send, {Right %targetDesktop%}
         targetDesktop++
     }
+
+    ; Finally, select the desktop
     Send, {Enter}
     PreviousDesktop := CurrentDesktop
     CurrentDesktop := targetDesktop

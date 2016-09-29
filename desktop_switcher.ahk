@@ -156,7 +156,8 @@ deleteVirtualDesktop()
 ;
 ; This function toggles layer setting of current window
 ;
-toggleAlwaysOnTop() {
+toggleAlwaysOnTop()
+{
     hwnd := WinExist("A")
     WinSet, AlwaysOnTop, Toggle, ahk_id %hwnd%
 }

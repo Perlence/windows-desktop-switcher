@@ -163,7 +163,6 @@ toggleAlwaysOnTop()
 }
 
 ; Main
-SetKeyDelay, 75
 mapDesktopsFromRegistry()
 PreviousDesktop := CurrentDesktop
 OutputDebug, [loading] desktops: %DesktopCount% current: %CurrentDesktop%

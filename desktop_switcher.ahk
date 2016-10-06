@@ -94,11 +94,18 @@ switchDesktopByNumber(targetDesktop, map := true)
     }
 
     ; Open task view and wait for it to become active
-    Send, #{Tab}
-    WinWaitActive, ahk_class MultitaskingViewFrame
-    if ErrorLevel {
-        OutputDebug, Timed out waiting for task view
-        return
+    Loop
+    {
+        OutputDebug, Opening Task View
+        Send, #{Tab}
+        OutputDebug, Waiting for Task View
+        WinWaitActive, ahk_class MultitaskingViewFrame,, 0.2
+        if ErrorLevel {
+            OutputDebug, Timed out waiting for task view
+        }
+        else {
+            break
+        }
     }
 
     ; Focus on desktops

@@ -43,7 +43,6 @@ mapDesktopsFromRegistry() {
         ; old guess and pray we're still correct :-D.
         if (DesktopIter = CurrentDesktopId) {
             if (CurrentDesktop <> i + 1) {
-                PreviousDesktop := CurrentDesktop
                 CurrentDesktop := i + 1
             }
             OutputDebug, Current desktop number is %CurrentDesktop% with an ID of %DesktopIter%.
@@ -85,6 +84,11 @@ switchDesktopByNumber(targetDesktop, map := true)
     ; the user may have switched desktops via some other means than the script.
     if (map) {
         mapDesktopsFromRegistry()
+    }
+
+    ; Don't switch to current desktop
+    if (targetDesktop = CurrentDesktop) {
+        return
     }
 
     ; Don't attempt to switch to an invalid desktop
